@@ -1,6 +1,11 @@
 #!/bin/ruby
 
+# Listen for changes in a MySQL db
+# When a change is detected, wrangle data into a blockchain ledger
+
 require 'mysql2'
+require 'excon'
+require 'json'
 
 # this takes a hash of options, almost all of which map directly
 # to the familiar database.yml in rails
@@ -9,6 +14,11 @@ require 'mysql2'
 last_index_value = 42
 
 client = Mysql2::Client.new(:host => "localhost", :port => "3306", :username => "root", :password => "0cretog1", :database => "openemr")
+
+# connection = Excon.new(
+# 'http://ce018849.ngrok.io/mineblock',
+# :instrumentor => ActiveSupport::Notifications
+# )
 
 while true
 
@@ -22,7 +32,7 @@ while true
 
         data_array = data.to_a
 
-        data_array.each_with_index {|val, index| puts "Wrangle #{val} => #{index} into the blockchain. " }
+        Excon.post('http://ce01884d.ngrok.io/mineblock', :body => {:data => data_array}.to_json, :headers => { "Content-Type" => "application/json" });
 
     end
 
