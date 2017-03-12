@@ -11,7 +11,7 @@ require 'json'
 # to the familiar database.yml in rails
 # See http://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/MysqlAdapter.html
 
-last_index_value = 42
+last_index_value = 61
 
 client = Mysql2::Client.new(:host => "localhost", :port => "3306", :username => "root", :password => "0cretog1", :database => "openemr")
 
@@ -28,11 +28,18 @@ while true
 
     if current_index_value > last_index_value
 
-        data = client.query("SELECT height, weight, BMI, bps, bpd, temperature FROM form_vitals")
+        data = client.query("SELECT height, weight, BMI, bps, bpd, temperature, date FROM form_vitals ORDER BY date DESC LIMIT 2")
 
-        data_array = data.to_a
+        current = data.to_a.first
+        previous = data.to_a.last
 
-        Excon.post('http://ce01884d.ngrok.io/mineblock', :body => {:data => data_array}.to_json, :headers => { "Content-Type" => "application/json" });
+        current.merge!(previous)
+
+        # same = current & previous
+        #
+        # same.each { |x| current.reject! { |elem| elem == x} }
+
+        Excon.post('http://ce01884d.ngrok.io/mineblock', :body => {:data => current}.to_json, :headers => { "Content-Type" => "application/json" });
 
     end
 
