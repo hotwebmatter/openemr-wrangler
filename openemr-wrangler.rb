@@ -13,7 +13,7 @@ require 'json'
 
 last_index_value = 61
 
-client = Mysql2::Client.new(:host => "localhost", :port => "3306", :username => "root", :password => "0cretog1", :database => "openemr")
+client = Mysql2::Client.new(:host => "localhost", :port => "3306", :username => "root", :password => "rootpw", :database => "openemr")
 
 # connection = Excon.new(
 # 'http://ce018849.ngrok.io/mineblock',
